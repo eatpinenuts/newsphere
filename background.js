@@ -1,17 +1,24 @@
 // Copyright (c) 2011 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+var upload = function(fileName) {
+  alert(fileName);
+}
+
 var pageGlobals = {
     currentUrl: "",
     url: "http://sharpcode.biz/unite/result.json?url="
 };
+
+var icons = ["green-19.png", "yellow-19.png", "red-19.png"];
+
 // Called when the url of a tab changes.
-function checkForValidUrl(tabId, change, tab) { 
+function checkForValidUrl(tabId, change, tab) {
     pageGlobals.currentUrl = tab.url;
     requestUrlCode(tab);
 }
 
-function requestUrlCode(tab) { 
+function requestUrlCode(tab) {
     var request = new XMLHttpRequest();
     if (request === null) {
         console.log("Unable to create request");
@@ -20,7 +27,7 @@ function requestUrlCode(tab) {
             if (request.readyState === 4) {
                 LDResponse(request.responseText, tab);
             }
-        };     
+        };
         request.open("GET", pageGlobals.url + tab.url, true);
         request.send(null);
     }
@@ -31,9 +38,11 @@ function LDResponse(response, tab) {
     // JSON.parse does not evaluate the attacker's scripts.
     try {
         var resp = JSON.parse(response);
-        if (resp.result === true) {
-            chrome.pageAction.setIcon({path:"icon-19.png", tabId: tab.id});
-            chrome.pageAction.show(tab.id);
+        
+        if (resp.isValid === true) {
+            chrome.pageAction.setIcon({path: icons[resp.result], tabId: tab.id}, function() {
+                chrome.pageAction.show(tab.id);
+            });
         }
     } catch (ex) {
         console.log(ex);
