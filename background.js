@@ -2,8 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 var upload = function(fileName) {
-  alert(fileName);
+    console.log(fileName);
 }
+
+var articles = null;
 
 var pageGlobals = {
     currentUrl: "",
@@ -41,6 +43,13 @@ function LDResponse(response, tab) {
         
         if (resp.isValid === true) {
             chrome.pageAction.setIcon({path: icons[resp.result], tabId: tab.id}, function() {
+                // check articles are available.
+                if(typeof(resp['articles']) !== 'undefined') {
+                    // extract articles from server response.
+                    //extractAltarticles(resp.articles);
+                    articles = resp.articles;
+                }
+                
                 chrome.pageAction.show(tab.id);
             });
         }
