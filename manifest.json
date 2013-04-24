@@ -22,6 +22,7 @@
         "green-19.png",
         "red-19.png",
         "yellow-19.png",
-        "popup.js"
+        "popup.js",
+        "popup.css"
   ]
 }
