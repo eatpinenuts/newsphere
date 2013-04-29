@@ -2,51 +2,76 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+var BGPage;
+var debug;
+
 window.onload = function() {
-    var BGPage = chrome.extension.getBackgroundPage();
-    //BGPage.upload("Test");
+    BGPage = chrome.extension.getBackgroundPage();
+    appendAlternatives();
+};
 
+function appendAlternatives() {
+    // get list element.
     var listRoot = document.getElementById('alternatives');
-
+    // clear all list items.
+    listRoot.innerHTML = '';
+    
+    var alts = document.getElementById('alts');
+    alts.innerHTML = '';
+    
+    // loop through articles.
     for (var key in BGPage.articles) {
-        console.log(BGPage.articles[key]);
-        // somewhere in your code, preferably outside of global scope
+        // create new list item.
         var div = document.createElement('li');
-        div.id = 'alternative_item';
-
+        // append new list item to list.
         listRoot.appendChild(div);
-        // assuming elements contains string of html with your elements
-        div.innerHTML = '<a href="' + BGPage.articles[key].url + '" target="_blank">' +
+        // set inner html for list item to a link to alternative site.
+        div.innerHTML = '<a href="http://' + BGPage.articles[key].url + '" target="_blank">' +
                 BGPage.articles[key].url + '</a>';
 
-        var desc = document.createElement('p');
+        /*var desc = document.createElement('p');
         desc.innerHTML = BGPage.articles[key].description;
 
-        listRoot.appendChild(desc);
+        listRoot.appendChild(desc);*/
     }
-};
+}
 
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('altLink').addEventListener(
             'click', addAlternativeClicked);
 });
 
+function addLinkClicked(e) {
+    //http://sharpcode.biz/unite/addalt.json?url=htt://sharpcode.biz&alt=www.test.com
+    debug = e;
+    
+    var requestUrl = 'http://sharpcode.biz/unite/addalt.json?url=' + BGPage.url + '&alt=' + e.toElement.innerText;
+    
+    BGPage.requestUrlCode(requestUrl, callback);
+}
+
+function callback(response){
+    console.log(response);
+    BGPage.getAlternativesRequest(function(){console.log('called back 3');
+    appendAlternatives();
+    });
+}
+
 function addAlternativeClicked(e) {
-    console.log('got here');
 
     chrome.tabs.getAllInWindow(null, function(tabs) {
         // TODO: only do if null
         var alts = document.getElementById('alts');
         // 
         for (var i = 0; i < tabs.length; i++) {
-            chrome.tabs.get(tabs[i].id, function(tab) {
-                // check if page is in problem state (new tab).
-                //alert(tab.url);
-                
+            chrome.tabs.get(tabs[i].id, function(tab) {  
                 var li = document.createElement('li');
                 alts.appendChild(li);
                 // assuming elements contains string of html with your elements
-                li.innerHTML = '<a href="#">' + tab.url + '</a>';   
+                li.innerHTML = '<a href="#">' + BGPage.url_domain(tab.url) + '</a>';
+                
+                li.addEventListener(
+                    'click', addLinkClicked);
             });
         }
     });
