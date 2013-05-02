@@ -7,7 +7,10 @@ var debug;
 
 window.onload = function() {
     BGPage = chrome.extension.getBackgroundPage();
+<<<<<<< HEAD
     
+=======
+>>>>>>> 976e8233c72ea95b4de306723882ad2dfa9086f1
     appendAlternatives();
 };
 
