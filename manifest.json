@@ -1,5 +1,5 @@
 {
-  "name": "Dewsky",
+  "name": "Choosey",
   "version": "0.1",
   "description": "Subordinates the power of the internet.",
   "background": { "scripts": ["background.js"] },
@@ -21,7 +21,8 @@
   "web_accessible_resources": [
         "green-19.png",
         "red-19.png",
-        "yellow-19.png",
+        "black-19.png",
+        "white-19.png",
         "popup.js",
         "popup.css"
   ]
