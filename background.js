@@ -60,11 +60,8 @@ function LDResponse(response, callback) {
                 // extract articles from server response.
                 //extractAltarticles(resp.articles);
                 articles = resp.articles;
-<<<<<<< HEAD
             }else {
                 articles = null;
-=======
->>>>>>> 976e8233c72ea95b4de306723882ad2dfa9086f1
             }
             if (typeof(resp['url']) !== 'undefined') {
 
