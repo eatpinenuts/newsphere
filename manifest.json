@@ -1,0 +1,29 @@
+{
+  "name": "Choosey",
+  "version": "0.1",
+  "description": "Subordinates the power of the internet.",
+  "background": { "scripts": ["background.js"] },
+  "page_action" :
+  {
+    "default_title" : "Info Available.",
+    "default_popup": "popup.html"
+  },
+  "permissions" : [
+    "tabs",
+    "http://sharpcode.biz/",
+    "http://www.sharpcode.biz/"
+  ],
+  "icons" : {
+    "48" : "icon-48.png",
+    "128" : "icon-128.png"
+  },
+  "manifest_version": 2,
+  "web_accessible_resources": [
+        "green-19.png",
+        "red-19.png",
+        "black-19.png",
+        "white-19.png",
+        "popup.js",
+        "popup.css"
+  ]
+}
