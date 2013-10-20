@@ -8,7 +8,7 @@ var url = null;
 
 var pageGlobals = {
     tab: null,
-    url: "http://sharpcode.biz/unite/result.json?url="
+    url: "https://sharpcode.biz/unite/result.json?url="
 };
 
 var icons = ["white-19.png", "black-19.png", "green-19.png", "red-19.png"];
@@ -72,7 +72,7 @@ function LDResponse(response, callback) {
             callback();
         });
     } catch (ex) {
-        console.log(ex);
+        //console.log(ex);
     }
 }
 
@@ -100,6 +100,7 @@ chrome.tabs.onActivated.addListener(function(activeInfo) {
 });
 
 function getFacebookStuff(callback){
+
     var request = new XMLHttpRequest();
     
     if (request === null) {
@@ -107,6 +108,7 @@ function getFacebookStuff(callback){
     } else {
         request.onreadystatechange = function() {
             if (request.readyState === 4) {
+				console.log(request.responseText);
                 var data = JSON.parse(request.responseText);
                 console.log(data);
                 facebookUrl = data.result.facebook_link;
@@ -116,13 +118,13 @@ function getFacebookStuff(callback){
             callback();
         };
         
-        request.open("GET", 'http://sharpcode.biz/chooseyr.json', true);
+        request.open("GET", 'https://sharpcode.biz/chooseyr.json', true);
         request.send(null);
     }
 }
 
 function facebookLogout(callback){
-    console.log('facebookLogout');
+    //console.log('facebookLogout');
     var request = new XMLHttpRequest();
     
     if (request === null) {
@@ -143,7 +145,7 @@ function facebookLogout(callback){
             }
         };
         
-        request.open("GET", 'http://sharpcode.biz/choosey/logout', true);//'http://sharpcode.biz/chooseyr/logout.json', true);
+        request.open("GET", 'https://sharpcode.biz/choosey/logout', true);//'http://sharpcode.biz/chooseyr/logout.json', true);
         request.send(null);
     }
 }
@@ -154,7 +156,7 @@ function facebookLogout(callback){
 
 
 
-var successURL = 'http://sharpcode.biz/chooseyr.json?code=';
+var successURL = 'https://sharpcode.biz/choosey?';//https://sharpcode.biz/chooseyr.json?code=';
 
 function onFacebookLogin(){
   //if (!localStorage.getItem('accessToken')) {
@@ -162,9 +164,9 @@ function onFacebookLogin(){
       for (var i = 0; i < tabs.length; i++) {
           console.log(tabs[i].url);
         if (tabs[i].url.indexOf(successURL) !== -1) {
-          console.log('found login tab');
+          console.log('found login tab: ' +  tabs[i].url);
           // below you get string like this: access_token=...&expires_in=...
-          var params = tabs[i].url.split('code=')[1];
+          var params = tabs[i].url.split('choosey?')[1];
           // in my extension I have used mootools method: parseQueryString. The following code is just an example ;)
           var accessToken = params.split('&')[0];
           //accessToken = accessToken.split('=')[1];

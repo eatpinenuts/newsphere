@@ -32,7 +32,8 @@ function setFbStatus(){
 }
 
 function fbLogin() {
-    chrome.windows.create({url:'http://sharpcode.biz/choosey', type:'popup'}, function (){
+
+    chrome.windows.create({url:'https://sharpcode.biz/choosey', type:'popup'}, function (){
         
     });
     //BGPage.facebookUrl;
@@ -93,7 +94,7 @@ function addLinkClicked(e) {
     //http://sharpcode.biz/unite/addalt.json?url=htt://sharpcode.biz&alt=www.test.com
     debug = e;
 
-    var requestUrl = 'http://sharpcode.biz/unite/addalt.json?url=' + BGPage.url + '&alt=' + e.toElement.innerText;
+    var requestUrl = 'https://sharpcode.biz/unite/addalt.json?url=' + BGPage.url + '&alt=' + e.toElement.innerText;
 
     BGPage.requestUrlCode(requestUrl, callback);
 }
