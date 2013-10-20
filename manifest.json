@@ -1,5 +1,5 @@
 {
-  "name": "Choosey",
+  "name": "Newsphere",
   "version": "0.1",
   "description": "Subordinates the power of the internet.",
   "background": { "scripts": ["background.js"] },
@@ -10,8 +10,8 @@
   },
   "permissions" : [
     "tabs",
-    "http://sharpcode.biz/",
-    "http://www.sharpcode.biz/"
+    "https://sharpcode.biz/",
+    "https://www.sharpcode.biz/"
   ],
   "icons" : {
     "48" : "icon-48.png",
@@ -24,6 +24,7 @@
         "black-19.png",
         "white-19.png",
         "popup.js",
-        "popup.css"
+        "popup.css",
+        "jQuery_1.9_min.js"
   ]
 }

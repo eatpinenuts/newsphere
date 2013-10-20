@@ -1,5 +1,9 @@
 var articles = null;
 
+var facebookUrl = "";
+var facebookIsLoggedIn = false;
+var facebookData = null;
+
 var url = null;
 
 var pageGlobals = {
@@ -25,10 +29,12 @@ function getAlternativesRequest(callback) {
 function checkForValidUrl(tabId, change, tab) {
     if (url_domain(tab.url) !== 'devtools') {
         pageGlobals.tab = tab;
-        
-        getAlternativesRequest(function(){console.log('called back 1');});
+        getFacebookStuff(function(){
+            getAlternativesRequest(function(){console.log('called back 1');});
+        });
     }
 }
+
 
 function requestUrlCode(url, callback) {
     var request = new XMLHttpRequest();
@@ -39,7 +45,6 @@ function requestUrlCode(url, callback) {
         request.onreadystatechange = function() {
             if (request.readyState === 4) {
                 callback(request.responseText);
-                //LDResponse(request.responseText, tab);
             }
         };
         
@@ -49,22 +54,15 @@ function requestUrlCode(url, callback) {
 }
 
 function LDResponse(response, callback) {
-    // do stuff with the response
-    // JSON.parse does not evaluate the attacker's scripts.
     try {
         var resp = JSON.parse(response);
         chrome.pageAction.setIcon({path: icons[resp.result], tabId: pageGlobals.tab.id}, function() {
-            //if (resp.isValid === true) {
-            // check articles are available.
             if (typeof(resp['articles']) !== 'undefined') {
-                // extract articles from server response.
-                //extractAltarticles(resp.articles);
                 articles = resp.articles;
             }else {
                 articles = null;
             }
             if (typeof(resp['url']) !== 'undefined') {
-
                 url = resp['url'];
                 console.log('url: ' + url);
             }
@@ -94,7 +92,95 @@ chrome.tabs.onActivated.addListener(function(activeInfo) {
         if (url_domain(tab.url) !== 'devtools') {
             pageGlobals.tab = tab;
             
-            getAlternativesRequest(function(){console.log('called back 2');});
+            getFacebookStuff(function(){
+                getAlternativesRequest(function(){console.log('called back 2');});
+            });       
         }
     });
 });
+
+function getFacebookStuff(callback){
+    var request = new XMLHttpRequest();
+    
+    if (request === null) {
+        console.log("Unable to create request");
+    } else {
+        request.onreadystatechange = function() {
+            if (request.readyState === 4) {
+                var data = JSON.parse(request.responseText);
+                console.log(data);
+                facebookUrl = data.result.facebook_link;
+                facebookIsLoggedIn = data.loggedIn;
+                facebookData = data.result;   
+            }
+            callback();
+        };
+        
+        request.open("GET", 'http://sharpcode.biz/chooseyr.json', true);
+        request.send(null);
+    }
+}
+
+function facebookLogout(callback){
+    console.log('facebookLogout');
+    var request = new XMLHttpRequest();
+    
+    if (request === null) {
+        console.log("Unable to create request");
+    } else {
+        request.onreadystatechange = function() {
+            if (request.readyState === 4) {
+                
+                console.log(request.responseText);
+                
+                var data = JSON.parse(request.responseText);
+                
+                facebookUrl = data.result.facebook_link;
+                facebookIsLoggedIn = data.loggedIn;
+                facebookData = data.result;
+                
+                callback();
+            }
+        };
+        
+        request.open("GET", 'http://sharpcode.biz/choosey/logout', true);//'http://sharpcode.biz/chooseyr/logout.json', true);
+        request.send(null);
+    }
+}
+
+
+
+
+
+
+
+var successURL = 'http://sharpcode.biz/chooseyr.json?code=';
+
+function onFacebookLogin(){
+  //if (!localStorage.getItem('accessToken')) {
+    chrome.tabs.query({}, function(tabs) { // get all tabs from every window
+      for (var i = 0; i < tabs.length; i++) {
+          console.log(tabs[i].url);
+        if (tabs[i].url.indexOf(successURL) !== -1) {
+          console.log('found login tab');
+          // below you get string like this: access_token=...&expires_in=...
+          var params = tabs[i].url.split('code=')[1];
+          // in my extension I have used mootools method: parseQueryString. The following code is just an example ;)
+          var accessToken = params.split('&')[0];
+          //accessToken = accessToken.split('=')[1];
+
+          localStorage.setItem('accessToken', accessToken);
+          chrome.tabs.remove(tabs[i].id);
+          
+          //chrome.pageAction.show(pageGlobals.tab.id);
+        }
+      }
+    });
+  /*}else{
+      console.log(localStorage.getItem('accessToken'));
+  }*/
+}
+
+chrome.tabs.onUpdated.addListener(onFacebookLogin);
+
+//removeListener
