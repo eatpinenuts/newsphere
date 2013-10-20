@@ -4,7 +4,7 @@ var url = null;
 
 var pageGlobals = {
     tab: null,
-    url: "http://sharpcode.biz/unite/result.json?url="
+    url: "https://sharpcode.biz/unite/result.json?url="
 };
 
 var icons = ["white-19.png", "black-19.png", "green-19.png", "red-19.png"];
